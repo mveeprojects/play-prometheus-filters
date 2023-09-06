@@ -11,7 +11,7 @@ lazy val root = (project in file("."))
 publishTo := sonatypePublishToBundle.value
 credentials += Credentials(Path.userHome / ".sbt" / ".credentials.sonatype")
 
-scalaVersion := "2.13.8"
+scalaVersion := "2.13.12"
 crossScalaVersions := Seq(scalaVersion.value, "2.12.15")
 
 val playVersion = "2.8.13"
