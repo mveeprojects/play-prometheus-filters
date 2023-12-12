@@ -1,9 +1,10 @@
 package com.github.stijndehaes.playprometheusfilters.filters
 
-import org.apache.pekko.stream.Materializer
+import com.github.stijndehaes.playprometheusfilters.helpers.Conversions._
 import com.github.stijndehaes.playprometheusfilters.mocks.MockController
 import io.prometheus.client.CollectorRegistry
 import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.Materializer
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
@@ -16,7 +17,13 @@ import play.api.test.{DefaultAwaitTimeout, FakeRequest, FutureAwaits}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class LatencyFilterSpec extends PlaySpec with MockitoSugar with Results with DefaultAwaitTimeout with FutureAwaits with GuiceOneAppPerSuite {
+class LatencyFilterSpec
+    extends PlaySpec
+    with MockitoSugar
+    with Results
+    with DefaultAwaitTimeout
+    with FutureAwaits
+    with GuiceOneAppPerSuite {
 
   private implicit val actorSystem: ActorSystem = ActorSystem("test")
 
@@ -32,6 +39,7 @@ class LatencyFilterSpec extends PlaySpec with MockitoSugar with Results with Def
 
   "Apply method" should {
     "Measure the latency" in {
+
       implicit val mat: Materializer = app.materializer
       val filter = new LatencyFilter(mock[CollectorRegistry], configuration)
       val rh = FakeRequest()
@@ -39,14 +47,16 @@ class LatencyFilterSpec extends PlaySpec with MockitoSugar with Results with Def
 
       await(filter(action)(rh).run())
 
-      val metrics = filter.metrics(0).metric.collect()
+      val metrics = filter.metrics.head.metric.collect()
+
+      val maybeRequestLatencySecondsCount: Option[MetricSample] =
+        toMetricSamples(metrics.head.samples)
+          .find(_.metricName == "requests_latency_seconds_count")
+
       metrics must have size 1
-      val samples = metrics.get(0).samples
-      //this is the count sample
-      val countSample = samples.get(samples.size() - 2)
-      countSample.value mustBe 1.0
-      countSample.labelValues must have size 0
+      maybeRequestLatencySecondsCount must not be empty
+      maybeRequestLatencySecondsCount.get.value mustBe 1.0
+      maybeRequestLatencySecondsCount.get.labels must have size 0
     }
   }
-
 }
