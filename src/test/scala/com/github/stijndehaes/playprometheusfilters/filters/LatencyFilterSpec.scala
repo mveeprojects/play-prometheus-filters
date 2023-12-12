@@ -51,12 +51,14 @@ class LatencyFilterSpec
 
       val maybeRequestLatencySecondsCount: Option[MetricSample] =
         toMetricSamples(metrics.head.samples)
-          .find(_.metricName == "requests_latency_seconds_count")
+          .find(_.metricName.equals("requests_latency_seconds_count"))
 
       metrics must have size 1
       maybeRequestLatencySecondsCount must not be empty
-      maybeRequestLatencySecondsCount.get.value mustBe 1.0
-      maybeRequestLatencySecondsCount.get.labels must have size 0
+      maybeRequestLatencySecondsCount.map { result =>
+        result.value mustBe 1.0
+        result.labelValues must have size 0
+      }
     }
   }
 }

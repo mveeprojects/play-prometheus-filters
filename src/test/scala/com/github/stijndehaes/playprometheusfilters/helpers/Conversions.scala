@@ -7,7 +7,7 @@ import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions
 object Conversions {
 
-  case class MetricSample(metricName: String, value: Double, labels: List[String])
+  case class MetricSample(metricName: String, value: Double, labelValues: List[String])
 
   def toMetricSamples(javaMetricSamples: util.List[MetricFamilySamples.Sample]): List[MetricSample] = javaMetricSamples.map { sample =>
     MetricSample(sample.name, sample.value, sample.labelValues)
