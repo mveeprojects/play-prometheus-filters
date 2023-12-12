@@ -26,7 +26,7 @@ class PrometheusControllerSpec extends PlaySpec with Results with MockitoSugar {
 
       val result = client.getMetrics.apply(request)
       status(result) mustBe OK
-      contentAsString(result) mustBe "# HELP test help\n# TYPE test counter\n"
+      contentAsString(result) mustBe "# HELP test_total help\n# TYPE test_total counter\n"
     }
   }
 }
