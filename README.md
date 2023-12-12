@@ -24,7 +24,7 @@ For more info on play version compatibility see the releases matrix.
 
 | Release | Play version |
 |:--------|:-------------|
-| TBC     | 3.0.x        |
+| 1.0.0   | 3.0.x        |
 | 0.6.x   | 2.8.x        |
 
 For earlier play versions, see the original repository [play-prometheus-filters](https://github.com/stijndehaes/play-prometheus-filters)
